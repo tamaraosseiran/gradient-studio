@@ -189,7 +189,7 @@ export default function ControlsPanel({
                 step={0.5}
                 className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
               />
-              <p className="text-xs text-gray-400 mt-1">Controls how fast the gradient animates and flows</p>
+              <p className="text-xs text-gray-400 mt-1">Animation speed and flow rate</p>
             </div>
 
             <div>
@@ -205,7 +205,7 @@ export default function ControlsPanel({
                 step={0.5}
                 className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
               />
-              <p className="text-xs text-gray-400 mt-1">Overall brightness and visibility of the gradient</p>
+              <p className="text-xs text-gray-400 mt-1">Overall gradient brightness</p>
             </div>
 
             <div>
@@ -223,7 +223,7 @@ export default function ControlsPanel({
                 step={0.5}
                 className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
               />
-              <p className="text-xs text-gray-400 mt-1">How much stronger the effect gets when clicking and dragging</p>
+              <p className="text-xs text-gray-400 mt-1">Interaction effect multiplier</p>
             </div>
 
             <div>
@@ -239,7 +239,7 @@ export default function ControlsPanel({
                 step={0.1}
                 className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
               />
-              <p className="text-xs text-gray-400 mt-1">Direction of the gradient flow and movement</p>
+              <p className="text-xs text-gray-400 mt-1">Gradient movement direction</p>
             </div>
 
             <div>
@@ -255,7 +255,7 @@ export default function ControlsPanel({
                 step={0.5}
                 className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
               />
-              <p className="text-xs text-gray-400 mt-1">How many waves and ripples appear in the gradient</p>
+              <p className="text-xs text-gray-400 mt-1">Wave pattern density</p>
             </div>
 
             {/* Color Palette Section */}
