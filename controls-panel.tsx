@@ -147,8 +147,14 @@ export default function ControlsPanel({
               : "w-72 h-auto" // Expanded: full panel size
           }`}
         >
-          {/* Toggle Button - always in the same position */}
-          <div className="absolute top-3 right-3 z-20">
+          {/* Toggle Button - conditionally positioned */}
+          <div
+            className={`absolute z-20 transition-all duration-300 ${
+              isHidden
+                ? "top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" // Centered when collapsed
+                : "top-3 right-3" // Top-right when expanded
+            }`}
+          >
             <Button
               size="sm"
               variant="ghost"
