@@ -16,7 +16,7 @@ interface ColorPickerModalProps {
   colorIndex: number
 }
 
-// Convert RGB (0-1) to HSV
+// Convert RGB to HSV
 function rgbToHsv(r: number, g: number, b: number): [number, number, number] {
   const max = Math.max(r, g, b)
   const min = Math.min(r, g, b)
@@ -28,7 +28,8 @@ function rgbToHsv(r: number, g: number, b: number): [number, number, number] {
     else if (max === g) h = (b - r) / diff + 2
     else h = (r - g) / diff + 4
   }
-  h = (h * 60 + 360) % 360
+  h = Math.round(h * 60)
+  if (h < 0) h += 360
 
   const s = max === 0 ? 0 : diff / max
   const v = max
@@ -36,7 +37,7 @@ function rgbToHsv(r: number, g: number, b: number): [number, number, number] {
   return [h, s, v]
 }
 
-// Convert HSV to RGB (0-1)
+// Convert HSV to RGB
 function hsvToRgb(h: number, s: number, v: number): [number, number, number] {
   const c = v * s
   const x = c * (1 - Math.abs(((h / 60) % 2) - 1))
@@ -46,12 +47,31 @@ function hsvToRgb(h: number, s: number, v: number): [number, number, number] {
     g = 0,
     b = 0
 
-  if (h >= 0 && h < 60) [r, g, b] = [c, x, 0]
-  else if (h >= 60 && h < 120) [r, g, b] = [x, c, 0]
-  else if (h >= 120 && h < 180) [r, g, b] = [0, c, x]
-  else if (h >= 180 && h < 240) [r, g, b] = [0, x, c]
-  else if (h >= 240 && h < 300) [r, g, b] = [x, 0, c]
-  else if (h >= 300 && h < 360) [r, g, b] = [c, 0, x]
+  if (h >= 0 && h < 60) {
+    r = c
+    g = x
+    b = 0
+  } else if (h >= 60 && h < 120) {
+    r = x
+    g = c
+    b = 0
+  } else if (h >= 120 && h < 180) {
+    r = 0
+    g = c
+    b = x
+  } else if (h >= 180 && h < 240) {
+    r = 0
+    g = x
+    b = c
+  } else if (h >= 240 && h < 300) {
+    r = x
+    g = 0
+    b = c
+  } else if (h >= 300 && h < 360) {
+    r = c
+    g = 0
+    b = x
+  }
 
   return [r + m, g + m, b + m]
 }
@@ -65,12 +85,12 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
   useEffect(() => {
     setCurrentColor(color)
     setHsv(rgbToHsv(color[0], color[1], color[2]))
-  }, [color, isOpen])
+  }, [color])
 
   useEffect(() => {
     drawColorArea()
     drawHueSlider()
-  }, [hsv[0]]) // Redraw when hue changes
+  }, [hsv])
 
   const drawColorArea = () => {
     const canvas = colorAreaRef.current
@@ -93,12 +113,12 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
     ctx.fillStyle = satGradient
     ctx.fillRect(0, 0, width, height)
 
-    // Vertical gradient (brightness)
-    const brightGradient = ctx.createLinearGradient(0, 0, 0, height)
-    brightGradient.addColorStop(0, "rgba(0, 0, 0, 0)")
-    brightGradient.addColorStop(1, "rgba(0, 0, 0, 1)")
+    // Vertical gradient (lightness)
+    const lightGradient = ctx.createLinearGradient(0, 0, 0, height)
+    lightGradient.addColorStop(0, "rgba(0, 0, 0, 0)")
+    lightGradient.addColorStop(1, "rgba(0, 0, 0, 1)")
 
-    ctx.fillStyle = brightGradient
+    ctx.fillStyle = lightGradient
     ctx.fillRect(0, 0, width, height)
   }
 
@@ -112,12 +132,10 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
     const width = canvas.width
     const height = canvas.height
 
-    // Create rainbow gradient
     const gradient = ctx.createLinearGradient(0, 0, width, 0)
-    for (let i = 0; i <= 6; i++) {
-      const hue = (i / 6) * 360
-      const rgb = hsvToRgb(hue, 1, 1)
-      gradient.addColorStop(i / 6, `rgb(${rgb[0] * 255}, ${rgb[1] * 255}, ${rgb[2] * 255})`)
+    for (let i = 0; i <= 360; i += 60) {
+      const rgb = hsvToRgb(i, 1, 1)
+      gradient.addColorStop(i / 360, `rgb(${rgb[0] * 255}, ${rgb[1] * 255}, ${rgb[2] * 255})`)
     }
 
     ctx.fillStyle = gradient
@@ -132,10 +150,10 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
 
-    const saturation = x / canvas.width
-    const value = 1 - y / canvas.height
+    const s = x / canvas.width
+    const v = 1 - y / canvas.height
 
-    const newHsv: [number, number, number] = [hsv[0], saturation, value]
+    const newHsv: [number, number, number] = [hsv[0], Math.max(0, Math.min(1, s)), Math.max(0, Math.min(1, v))]
     setHsv(newHsv)
 
     const rgb = hsvToRgb(newHsv[0], newHsv[1], newHsv[2])
@@ -149,8 +167,9 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
     const rect = canvas.getBoundingClientRect()
     const x = e.clientX - rect.left
 
-    const hue = (x / canvas.width) * 360
-    const newHsv: [number, number, number] = [hue, hsv[1], hsv[2]]
+    const h = (x / canvas.width) * 360
+
+    const newHsv: [number, number, number] = [Math.max(0, Math.min(360, h)), hsv[1], hsv[2]]
     setHsv(newHsv)
 
     const rgb = hsvToRgb(newHsv[0], newHsv[1], newHsv[2])
@@ -171,9 +190,9 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
 
   return (
     <Dialog open={isOpen} onOpenChange={onCancel}>
-      <DialogContent className="sm:max-w-md bg-gray-900 border-gray-700 text-white">
+      <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-lg">Edit Color {colorIndex + 1}</DialogTitle>
+          <DialogTitle className="text-base">Edit Color {colorIndex + 1}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -181,12 +200,12 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
           <div className="relative">
             <canvas
               ref={colorAreaRef}
-              width={300}
+              width={280}
               height={200}
               className="w-full h-48 rounded-lg cursor-crosshair border border-gray-600"
               onClick={handleColorAreaClick}
             />
-            {/* Color area selector */}
+            {/* Color area indicator */}
             <div
               className="absolute w-4 h-4 border-2 border-white rounded-full pointer-events-none shadow-lg"
               style={{
@@ -201,14 +220,14 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
           <div className="relative">
             <canvas
               ref={hueSliderRef}
-              width={300}
+              width={280}
               height={20}
               className="w-full h-5 rounded cursor-pointer border border-gray-600"
               onClick={handleHueSliderClick}
             />
-            {/* Hue selector */}
+            {/* Hue slider indicator */}
             <div
-              className="absolute w-4 h-6 border-2 border-white rounded-sm pointer-events-none shadow-lg"
+              className="absolute w-4 h-6 border-2 border-white rounded-sm pointer-events-none shadow-lg bg-gray-800"
               style={{
                 left: `${(hsv[0] / 360) * 100}%`,
                 top: "50%",
@@ -217,70 +236,73 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
             />
           </div>
 
-          {/* Color Preview and Tools */}
+          {/* Controls Row */}
           <div className="flex items-center gap-3">
+            {/* Eyedropper Tool */}
             <Button
               size="sm"
               variant="ghost"
-              className="h-10 w-10 p-0 bg-transparent hover:bg-white/10 hover:text-white transition-colors"
+              className="h-8 w-8 p-0 bg-transparent hover:bg-white/10 hover:text-white transition-colors"
             >
               <Eyedropper className="w-4 h-4" />
             </Button>
+
+            {/* Color Preview */}
             <div
-              className="w-12 h-10 rounded-lg border border-gray-600"
+              className="w-8 h-8 rounded-full border-2 border-gray-600"
               style={{
                 backgroundColor: `rgb(${currentColor[0] * 255}, ${currentColor[1] * 255}, ${currentColor[2] * 255})`,
               }}
             />
-          </div>
 
-          {/* RGB Inputs */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="space-y-1">
-              <Input
-                type="number"
-                min="0"
-                max="255"
-                value={Math.round(currentColor[0] * 255)}
-                onChange={(e) => handleRgbChange(0, e.target.value)}
-                className="bg-gray-800 border-gray-600 text-white text-center"
-              />
-              <label className="block text-xs text-center text-gray-400">R</label>
-            </div>
-            <div className="space-y-1">
-              <Input
-                type="number"
-                min="0"
-                max="255"
-                value={Math.round(currentColor[1] * 255)}
-                onChange={(e) => handleRgbChange(1, e.target.value)}
-                className="bg-gray-800 border-gray-600 text-white text-center"
-              />
-              <label className="block text-xs text-center text-gray-400">G</label>
-            </div>
-            <div className="space-y-1">
-              <Input
-                type="number"
-                min="0"
-                max="255"
-                value={Math.round(currentColor[2] * 255)}
-                onChange={(e) => handleRgbChange(2, e.target.value)}
-                className="bg-gray-800 border-gray-600 text-white text-center"
-              />
-              <label className="block text-xs text-center text-gray-400">B</label>
+            {/* RGB Inputs */}
+            <div className="flex gap-2 flex-1">
+              <div className="flex flex-col items-center">
+                <Input
+                  type="number"
+                  min="0"
+                  max="255"
+                  value={Math.round(currentColor[0] * 255)}
+                  onChange={(e) => handleRgbChange(0, e.target.value)}
+                  className="w-16 h-8 text-xs text-center bg-gray-800 border-gray-600 text-white"
+                />
+                <label className="text-xs text-gray-400 mt-1">R</label>
+              </div>
+              <div className="flex flex-col items-center">
+                <Input
+                  type="number"
+                  min="0"
+                  max="255"
+                  value={Math.round(currentColor[1] * 255)}
+                  onChange={(e) => handleRgbChange(1, e.target.value)}
+                  className="w-16 h-8 text-xs text-center bg-gray-800 border-gray-600 text-white"
+                />
+                <label className="text-xs text-gray-400 mt-1">G</label>
+              </div>
+              <div className="flex flex-col items-center">
+                <Input
+                  type="number"
+                  min="0"
+                  max="255"
+                  value={Math.round(currentColor[2] * 255)}
+                  onChange={(e) => handleRgbChange(2, e.target.value)}
+                  className="w-16 h-8 text-xs text-center bg-gray-800 border-gray-600 text-white"
+                />
+                <label className="text-xs text-gray-400 mt-1">B</label>
+              </div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end gap-2 pt-4">
+          <div className="flex gap-3 pt-2">
             <Button
               variant="outline"
               onClick={onCancel}
-              className="border-gray-600 bg-transparent hover:bg-white/10 hover:text-white transition-colors"
+              className="flex-1 border-gray-600 bg-transparent hover:bg-white/10 hover:text-white transition-colors"
             >
               Cancel
             </Button>
-            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button onClick={handleSave} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
               Save
             </Button>
           </div>
