@@ -1,12 +1,11 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
-import { RotateCcw, Edit3, Shuffle, Palette, ChevronLeft, GripVertical } from "lucide-react"
+import { RotateCcw, Edit3, Shuffle, ChevronLeft, GripVertical, Dice6 } from "lucide-react"
 import ColorPickerModal from "./color-picker-modal"
 
 // Convert RGB array to hex
@@ -143,7 +142,7 @@ export default function ControlsPanel({
         <Button
           size="sm"
           onClick={() => setIsHidden(false)}
-          className="bg-black/80 border-gray-700 text-white hover:bg-gray-700"
+          className="bg-black/80 border-gray-700 text-white hover:bg-blue-600/20 hover:text-blue-400 transition-colors"
         >
           <ChevronLeft className="w-4 h-4 rotate-180" />
         </Button>
@@ -163,7 +162,7 @@ export default function ControlsPanel({
                   size="sm"
                   variant="outline"
                   onClick={onReset}
-                  className="border-gray-600 hover:bg-gray-700 bg-transparent"
+                  className="border-gray-600 bg-transparent hover:bg-blue-600/20 hover:text-blue-400 transition-colors"
                 >
                   <RotateCcw className="w-4 h-4" />
                 </Button>
@@ -171,7 +170,7 @@ export default function ControlsPanel({
                   size="sm"
                   variant="outline"
                   onClick={() => setIsHidden(true)}
-                  className="border-gray-600 hover:bg-gray-700 bg-transparent"
+                  className="border-gray-600 bg-transparent hover:bg-blue-600/20 hover:text-blue-400 transition-colors"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
@@ -281,7 +280,18 @@ export default function ControlsPanel({
             {/* Color Palette Section */}
             <div className="border-t border-gray-600 pt-4">
               <div className="space-y-3">
-                <label className="text-sm font-medium">Colors</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium">Colors</label>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={onShufflePalette}
+                    className="h-8 w-8 p-0 bg-transparent hover:bg-blue-600/20 hover:text-blue-400 transition-colors"
+                    title="Shuffle color order"
+                  >
+                    <Shuffle className="w-4 h-4" />
+                  </Button>
+                </div>
 
                 {/* Current Palette Colors */}
                 <div className="grid grid-cols-5 gap-3">
@@ -318,12 +328,13 @@ export default function ControlsPanel({
                   ))}
                 </div>
 
-                {/* Template Selection */}
+                {/* Theme Selection */}
                 <div className="space-y-2">
+                  <label className="text-sm font-medium">Theme</label>
                   <select
                     value={currentPalette}
                     onChange={(e) => onPaletteChange(e.target.value)}
-                    className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white text-sm"
+                    className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
                   >
                     {Object.keys(palettes).map((name) => (
                       <option key={name} value={name}>
@@ -333,27 +344,16 @@ export default function ControlsPanel({
                   </select>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={onShufflePalette}
-                    className="border-gray-600 hover:bg-gray-700 bg-transparent flex-1"
-                  >
-                    <Shuffle className="w-4 h-4 mr-1" />
-                    Shuffle
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={onRandomPalette}
-                    className="border-gray-600 hover:bg-gray-700 bg-transparent flex-1"
-                  >
-                    <Palette className="w-4 h-4 mr-1" />
-                    Custom
-                  </Button>
-                </div>
+                {/* I'm Feeling Lucky Button */}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={onRandomPalette}
+                  className="border-gray-600 bg-transparent hover:bg-blue-600/20 hover:text-blue-400 transition-colors w-full"
+                >
+                  <Dice6 className="w-4 h-4 mr-2" />
+                  I'm Feeling Lucky
+                </Button>
               </div>
             </div>
           </CardContent>

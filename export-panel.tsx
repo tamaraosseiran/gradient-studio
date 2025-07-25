@@ -184,23 +184,35 @@ export default DynamicGradient;`
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden bg-gray-900 border-gray-700 text-white">
+      <DialogContent className="max-w-4xl w-[90vw] max-h-[80vh] overflow-hidden bg-gray-900 border-gray-700 text-white">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Export Gradient</DialogTitle>
         </DialogHeader>
 
-        <Tabs defaultValue="css" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 bg-gray-800">
-            <TabsTrigger value="css" className="data-[state=active]:bg-gray-700">
+        <Tabs defaultValue="css" className="w-full min-w-0">
+          <TabsList className="grid w-full grid-cols-4 bg-gray-800 border border-gray-600">
+            <TabsTrigger
+              value="css"
+              className="data-[state=active]:bg-gray-600 data-[state=active]:text-white text-gray-300 hover:text-white"
+            >
               CSS
             </TabsTrigger>
-            <TabsTrigger value="svg" className="data-[state=active]:bg-gray-700">
+            <TabsTrigger
+              value="svg"
+              className="data-[state=active]:bg-gray-600 data-[state=active]:text-white text-gray-300 hover:text-white"
+            >
               SVG
             </TabsTrigger>
-            <TabsTrigger value="react" className="data-[state=active]:bg-gray-700">
+            <TabsTrigger
+              value="react"
+              className="data-[state=active]:bg-gray-600 data-[state=active]:text-white text-gray-300 hover:text-white"
+            >
               React
             </TabsTrigger>
-            <TabsTrigger value="config" className="data-[state=active]:bg-gray-700">
+            <TabsTrigger
+              value="config"
+              className="data-[state=active]:bg-gray-600 data-[state=active]:text-white text-gray-300 hover:text-white"
+            >
               Config
             </TabsTrigger>
           </TabsList>
@@ -212,13 +224,13 @@ export default DynamicGradient;`
                 <Button
                   size="sm"
                   onClick={() => copyToClipboard(generateCSS(), "css")}
-                  className="bg-gray-700 hover:bg-gray-600"
+                  className="bg-gray-700 hover:bg-gray-600 text-white border border-gray-500"
                 >
                   {copiedTab === "css" ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 </Button>
               </div>
-              <pre className="bg-gray-800 p-4 rounded-lg text-sm overflow-auto max-h-96 border border-gray-600">
-                <code>{generateCSS()}</code>
+              <pre className="bg-gray-800 p-4 rounded-lg text-sm overflow-auto max-h-96 border border-gray-600 max-w-full whitespace-pre-wrap break-words">
+                <code className="block max-w-full">{generateCSS()}</code>
               </pre>
             </div>
           </TabsContent>
@@ -230,13 +242,13 @@ export default DynamicGradient;`
                 <Button
                   size="sm"
                   onClick={() => copyToClipboard(generateSVG(), "svg")}
-                  className="bg-gray-700 hover:bg-gray-600"
+                  className="bg-gray-700 hover:bg-gray-600 text-white border border-gray-500"
                 >
                   {copiedTab === "svg" ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 </Button>
               </div>
-              <pre className="bg-gray-800 p-4 rounded-lg text-sm overflow-auto max-h-96 border border-gray-600">
-                <code>{generateSVG()}</code>
+              <pre className="bg-gray-800 p-4 rounded-lg text-sm overflow-auto max-h-96 border border-gray-600 max-w-full whitespace-pre-wrap break-words">
+                <code className="block max-w-full">{generateSVG()}</code>
               </pre>
             </div>
           </TabsContent>
@@ -248,13 +260,13 @@ export default DynamicGradient;`
                 <Button
                   size="sm"
                   onClick={() => copyToClipboard(generateReact(), "react")}
-                  className="bg-gray-700 hover:bg-gray-600"
+                  className="bg-gray-700 hover:bg-gray-600 text-white border border-gray-500"
                 >
                   {copiedTab === "react" ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 </Button>
               </div>
-              <pre className="bg-gray-800 p-4 rounded-lg text-sm overflow-auto max-h-96 border border-gray-600">
-                <code>{generateReact()}</code>
+              <pre className="bg-gray-800 p-4 rounded-lg text-sm overflow-auto max-h-96 border border-gray-600 max-w-full whitespace-pre-wrap break-words">
+                <code className="block max-w-full">{generateReact()}</code>
               </pre>
             </div>
           </TabsContent>
@@ -266,13 +278,13 @@ export default DynamicGradient;`
                 <Button
                   size="sm"
                   onClick={() => copyToClipboard(generateConfig(), "config")}
-                  className="bg-gray-700 hover:bg-gray-600"
+                  className="bg-gray-700 hover:bg-gray-600 text-white border border-gray-500"
                 >
                   {copiedTab === "config" ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 </Button>
               </div>
-              <pre className="bg-gray-800 p-4 rounded-lg text-sm overflow-auto max-h-96 border border-gray-600">
-                <code>{generateConfig()}</code>
+              <pre className="bg-gray-800 p-4 rounded-lg text-sm overflow-auto max-h-96 border border-gray-600 max-w-full whitespace-pre-wrap break-words">
+                <code className="block max-w-full">{generateConfig()}</code>
               </pre>
             </div>
           </TabsContent>
