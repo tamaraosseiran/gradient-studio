@@ -152,9 +152,9 @@ export default function ControlsPanel({
 
   return (
     <>
-      <div className="absolute top-4 left-4 w-72 z-10">
-        <Card className="bg-black/80 border-gray-700 text-white">
-          <CardHeader className="pb-3">
+      <div className="absolute top-4 left-4 w-72 z-10 max-h-[calc(100vh-2rem)]">
+        <Card className="bg-black/80 border-gray-700 text-white h-full flex flex-col">
+          <CardHeader className="pb-3 flex-shrink-0">
             <CardTitle className="text-base flex items-center justify-between">
               Controls
               <div className="flex gap-2">
@@ -177,7 +177,7 @@ export default function ControlsPanel({
               </div>
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 overflow-y-auto flex-1 min-h-0">
             {/* Main Controls */}
             <div>
               <div className="flex items-center justify-between mb-2">
