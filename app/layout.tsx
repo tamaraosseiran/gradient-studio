@@ -6,8 +6,8 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Dynamic Gradient Studio",
-  description: "Create beautiful interactive gradients with real-time controls",
+  title: "Dynamic Gradient",
+  description: "Interactive WebGL gradient with real-time controls",
     generator: 'v0.dev'
 }
 

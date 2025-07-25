@@ -1,10 +1,15 @@
-import dynamic from "next/dynamic"
+"use client"
 
-// Import the WebGL gradient page with no SSR to avoid hydration issues
-const WebGLGradientPage = dynamic(() => import("../webgl-gradient-page"), {
-  ssr: false,
-})
+import { Suspense } from "react"
+import WebGLGradientPage from "../webgl-gradient-page"
+import FallbackGradient from "../fallback-gradient"
 
 export default function Page() {
-  return <WebGLGradientPage />
+  return (
+    <div className="w-full h-screen overflow-hidden">
+      <Suspense fallback={<FallbackGradient />}>
+        <WebGLGradientPage />
+      </Suspense>
+    </div>
+  )
 }

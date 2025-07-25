@@ -1,104 +1,83 @@
-"use client"
-
-// Curated color palettes with good gradient combinations
 export const COLOR_PALETTES = {
   "Sunset Dreams": [
-    [1.0, 0.4, 0.2], // Warm orange
-    [1.0, 0.6, 0.3], // Light orange
-    [1.0, 0.8, 0.4], // Yellow
-    [0.9, 0.5, 0.7], // Pink
-    [0.7, 0.3, 0.8], // Purple
+    [1.0, 0.4, 0.2], // Orange-red
+    [1.0, 0.6, 0.0], // Orange
+    [0.9, 0.3, 0.6], // Pink
+    [0.7, 0.2, 0.8], // Purple
+    [0.3, 0.1, 0.9], // Blue
   ],
-  "Ocean Breeze": [
-    [0.2, 0.6, 1.0], // Light blue
-    [0.3, 0.8, 0.9], // Cyan
-    [0.4, 0.9, 0.8], // Turquoise
-    [0.5, 0.8, 0.6], // Mint
-    [0.3, 0.7, 0.9], // Sky blue
+  "Ocean Depths": [
+    [0.0, 0.3, 0.8], // Deep blue
+    [0.0, 0.5, 0.9], // Ocean blue
+    [0.2, 0.7, 1.0], // Light blue
+    [0.4, 0.9, 0.9], // Cyan
+    [0.6, 1.0, 0.8], // Aqua
   ],
-  "Forest Whisper": [
-    [0.3, 0.7, 0.4], // Forest green
-    [0.5, 0.8, 0.3], // Lime
-    [0.7, 0.9, 0.4], // Yellow green
-    [0.4, 0.6, 0.3], // Olive
-    [0.2, 0.5, 0.3], // Dark green
+  "Forest Mystique": [
+    [0.1, 0.4, 0.2], // Dark green
+    [0.2, 0.6, 0.3], // Forest green
+    [0.4, 0.8, 0.4], // Light green
+    [0.6, 0.9, 0.6], // Mint
+    [0.8, 1.0, 0.8], // Pale green
   ],
-  "Lavender Fields": [
-    [0.7, 0.5, 0.9], // Lavender
-    [0.8, 0.6, 0.9], // Light purple
-    [0.9, 0.7, 0.8], // Pink
-    [0.6, 0.4, 0.8], // Deep purple
-    [0.8, 0.8, 0.9], // Very light purple
+  "Cosmic Purple": [
+    [0.2, 0.0, 0.4], // Deep purple
+    [0.4, 0.1, 0.6], // Purple
+    [0.6, 0.3, 0.8], // Light purple
+    [0.8, 0.5, 0.9], // Lavender
+    [1.0, 0.7, 1.0], // Pink-purple
+  ],
+  "Golden Hour": [
+    [0.8, 0.3, 0.0], // Dark orange
+    [1.0, 0.5, 0.1], // Orange
+    [1.0, 0.7, 0.2], // Golden
+    [1.0, 0.9, 0.4], // Light gold
+    [1.0, 1.0, 0.8], // Cream
+  ],
+  "Neon Nights": [
+    [1.0, 0.0, 0.5], // Hot pink
+    [0.8, 0.0, 1.0], // Magenta
+    [0.4, 0.0, 1.0], // Blue-purple
+    [0.0, 0.5, 1.0], // Electric blue
+    [0.0, 1.0, 0.8], // Cyan
   ],
   "Autumn Leaves": [
-    [1.0, 0.5, 0.2], // Orange
-    [0.9, 0.3, 0.1], // Red orange
-    [1.0, 0.7, 0.3], // Golden
-    [0.8, 0.2, 0.1], // Deep red
-    [0.7, 0.4, 0.1], // Brown
+    [0.6, 0.2, 0.0], // Brown
+    [0.8, 0.4, 0.1], // Rust
+    [1.0, 0.6, 0.0], // Orange
+    [1.0, 0.8, 0.2], // Yellow-orange
+    [1.0, 1.0, 0.4], // Yellow
   ],
-  "Midnight Aurora": [
-    [0.2, 0.3, 0.8], // Deep blue
-    [0.4, 0.2, 0.9], // Purple
-    [0.6, 0.8, 0.9], // Light blue
-    [0.3, 0.9, 0.7], // Cyan
-    [0.1, 0.2, 0.6], // Dark blue
-  ],
-  "Coral Reef": [
-    [1.0, 0.4, 0.5], // Coral
-    [1.0, 0.6, 0.4], // Peach
-    [0.9, 0.8, 0.6], // Cream
-    [0.4, 0.8, 0.9], // Aqua
-    [0.6, 0.9, 0.8], // Mint
-  ],
-  "Desert Mirage": [
-    [1.0, 0.8, 0.4], // Sand
-    [1.0, 0.6, 0.3], // Orange
-    [0.9, 0.4, 0.2], // Rust
-    [0.8, 0.7, 0.5], // Beige
-    [0.7, 0.5, 0.3], // Brown
-  ],
-  "Cherry Blossom": [
-    [1.0, 0.7, 0.8], // Light pink
-    [0.9, 0.5, 0.7], // Pink
-    [1.0, 0.9, 0.9], // Very light pink
-    [0.8, 0.4, 0.6], // Rose
-    [0.9, 0.8, 0.8], // Blush
-  ],
-  "Northern Lights": [
-    [0.3, 0.9, 0.6], // Green
-    [0.2, 0.7, 0.9], // Blue
-    [0.6, 0.3, 0.9], // Purple
-    [0.9, 0.9, 0.3], // Yellow
-    [0.1, 0.5, 0.8], // Dark blue
+  "Arctic Aurora": [
+    [0.0, 0.2, 0.4], // Dark blue
+    [0.0, 0.4, 0.6], // Blue
+    [0.2, 0.6, 0.8], // Light blue
+    [0.4, 0.8, 0.9], // Ice blue
+    [0.8, 1.0, 1.0], // White-blue
   ],
 }
 
-export const PALETTE_NAMES = Object.keys(COLOR_PALETTES)
-
 export function getRandomPalette(): number[][] {
-  const names = PALETTE_NAMES
-  const randomName = names[Math.floor(Math.random() * names.length)]
+  const paletteNames = Object.keys(COLOR_PALETTES)
+  const randomName = paletteNames[Math.floor(Math.random() * paletteNames.length)]
   return COLOR_PALETTES[randomName as keyof typeof COLOR_PALETTES]
 }
 
 export function generateHarmoniousPalette(): number[][] {
-  // Generate a palette based on color theory
-  const baseHue = Math.random()
-  const colors: number[][] = []
+  const baseHue = Math.random() * 360
+  const palette: number[][] = []
 
-  // Analogous colors (colors next to each other on color wheel)
   for (let i = 0; i < 5; i++) {
-    const hue = (baseHue + i * 0.1) % 1
-    const saturation = 0.6 + Math.random() * 0.3
-    const lightness = 0.5 + Math.random() * 0.3
+    const hue = (baseHue + i * 30) % 360
+    const saturation = 0.7 + Math.random() * 0.3
+    const lightness = 0.4 + Math.random() * 0.4
 
     // Convert HSL to RGB
-    const rgb = hslToRgb(hue, saturation, lightness)
-    colors.push(rgb)
+    const rgb = hslToRgb(hue / 360, saturation, lightness)
+    palette.push(rgb)
   }
 
-  return colors
+  return palette
 }
 
 function hslToRgb(h: number, s: number, l: number): number[] {

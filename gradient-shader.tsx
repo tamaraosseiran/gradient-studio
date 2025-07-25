@@ -21,6 +21,7 @@ const fragmentShader = `
   uniform float uFlowDirection;
   uniform float uWaveFrequency;
   uniform float uColorShift;
+  uniform float uHoverRadius;
   uniform bool uMousePressed;
   uniform vec3 uColor1;
   uniform vec3 uColor2;
@@ -54,7 +55,7 @@ const fragmentShader = `
     vec2 uv = vUv;
     vec2 mouse = uMouse;
     
-    // Distance from mouse
+    // Distance from mouse with adjustable radius
     float dist = distance(uv, mouse);
     
     // Create more complex, non-repetitive waves
@@ -79,8 +80,10 @@ const fragmentShader = `
     float flow = sin(dot(uv, flowDir) * uWaveFrequency + time * 2.0) * 0.3;
     combined += flow;
     
-    // Mouse influence with adjustable press intensity
-    float mouseInfluence = 1.0 - smoothstep(0.0, 0.6, dist);
+    // Mouse influence with adjustable hover radius
+    float adjustedRadius = uHoverRadius * 0.6; // Scale the radius appropriately
+    float mouseInfluence = 1.0 - smoothstep(0.0, adjustedRadius, dist);
+    
     if (uMousePressed) {
       mouseInfluence *= uPressIntensity;
     }
@@ -97,8 +100,8 @@ const fragmentShader = `
     // Enhanced brightness calculation with scaled intensity
     float brightness = (0.3 + combined * 0.4 + mouseInfluence * 0.7) * (uIntensity * 0.2);
     
-    // Apply distance falloff with better visibility
-    brightness *= (1.0 - smoothstep(0.0, 0.8, dist)) * 0.9 + 0.4;
+    // Apply distance falloff with adjustable radius
+    brightness *= (1.0 - smoothstep(0.0, adjustedRadius * 1.3, dist)) * 0.9 + 0.4;
     
     vec3 color = baseColor * brightness;
     
@@ -119,6 +122,7 @@ interface GradientShaderProps {
   flowDirection: number
   waveFrequency: number
   colorShift: number
+  hoverRadius: number
   colorPalette: number[][]
 }
 
@@ -131,6 +135,7 @@ export default function GradientShader({
   flowDirection,
   waveFrequency,
   colorShift,
+  hoverRadius,
   colorPalette,
 }: GradientShaderProps) {
   const meshRef = useRef<THREE.Mesh>(null)
@@ -147,6 +152,7 @@ export default function GradientShader({
       uFlowDirection: { value: flowDirection },
       uWaveFrequency: { value: waveFrequency },
       uColorShift: { value: colorShift },
+      uHoverRadius: { value: hoverRadius },
       uMousePressed: { value: mousePressed },
       uColor1: { value: new THREE.Vector3(...colorPalette[0]) },
       uColor2: { value: new THREE.Vector3(...colorPalette[1]) },
@@ -165,6 +171,7 @@ export default function GradientShader({
       materialRef.current.uniforms.uFlowDirection.value = flowDirection
       materialRef.current.uniforms.uWaveFrequency.value = waveFrequency
       materialRef.current.uniforms.uColorShift.value = colorShift
+      materialRef.current.uniforms.uHoverRadius.value = hoverRadius
       materialRef.current.uniforms.uMousePressed.value = mousePressed
       materialRef.current.uniforms.uColor1.value.set(...colorPalette[0])
       materialRef.current.uniforms.uColor2.value.set(...colorPalette[1])
@@ -172,7 +179,17 @@ export default function GradientShader({
       materialRef.current.uniforms.uColor4.value.set(...colorPalette[3])
       materialRef.current.uniforms.uColor5.value.set(...colorPalette[4])
     }
-  }, [speed, intensity, pressIntensity, flowDirection, waveFrequency, colorShift, mousePressed, colorPalette])
+  }, [
+    speed,
+    intensity,
+    pressIntensity,
+    flowDirection,
+    waveFrequency,
+    colorShift,
+    hoverRadius,
+    mousePressed,
+    colorPalette,
+  ])
 
   // Update mouse position and time in animation frame
   useFrame((state) => {

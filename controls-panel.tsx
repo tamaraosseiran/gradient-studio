@@ -36,6 +36,8 @@ interface ControlsPanelProps {
   setWaveFrequency: (value: number) => void
   colorShift: number
   setColorShift: (value: number) => void
+  hoverRadius: number
+  setHoverRadius: (value: number) => void
   onReset: () => void
   currentPalette: string
   colorPalette: number[][]
@@ -59,6 +61,8 @@ export default function ControlsPanel({
   setWaveFrequency,
   colorShift,
   setColorShift,
+  hoverRadius,
+  setHoverRadius,
   onReset,
   currentPalette,
   colorPalette,
@@ -153,7 +157,7 @@ export default function ControlsPanel({
         <Card className="bg-black/80 border-gray-700 text-white">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center justify-between">
-              Gradient Controls
+              Controls
               <div className="flex gap-2">
                 <Button
                   size="sm"
@@ -224,6 +228,22 @@ export default function ControlsPanel({
                 className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
               />
               <p className="text-xs text-gray-400 mt-1">Interaction effect multiplier</p>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium">Hover Radius</label>
+                <span className="text-sm font-normal text-gray-300">{hoverRadius.toFixed(1)}</span>
+              </div>
+              <Slider
+                value={[hoverRadius]}
+                onValueChange={(value) => setHoverRadius(value[0])}
+                min={0.1}
+                max={2.0}
+                step={0.1}
+                className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
+              />
+              <p className="text-xs text-gray-400 mt-1">Size of mouse interaction area</p>
             </div>
 
             <div>
