@@ -243,7 +243,7 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
                   backgroundColor: `rgb(${Math.round(currentColor[0] * 255)}, ${Math.round(currentColor[1] * 255)}, ${Math.round(currentColor[2] * 255)})`,
                 }}
               />
-              <button className="p-2 rounded-full hover:bg-blue-600/20 hover:text-blue-400 transition-colors">
+              <button className="p-2 rounded-full hover:bg-white/10 hover:text-white transition-colors">
                 <EyeDropperIcon className="w-4 h-4" />
               </button>
             </div>
@@ -261,7 +261,7 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
                   max="255"
                   value={Math.round(currentColor[0] * 255)}
                   onChange={(e) => handleRgbChange("r", e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white h-9 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="bg-gray-800 border-gray-700 text-white h-9 focus:border-white/50 focus:ring-1 focus:ring-white/20"
                 />
               </div>
               <div>
@@ -275,7 +275,7 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
                   max="255"
                   value={Math.round(currentColor[1] * 255)}
                   onChange={(e) => handleRgbChange("g", e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white h-9 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="bg-gray-800 border-gray-700 text-white h-9 focus:border-white/50 focus:ring-1 focus:ring-white/20"
                 />
               </div>
               <div>
@@ -289,7 +289,7 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
                   max="255"
                   value={Math.round(currentColor[2] * 255)}
                   onChange={(e) => handleRgbChange("b", e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white h-9 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="bg-gray-800 border-gray-700 text-white h-9 focus:border-white/50 focus:ring-1 focus:ring-white/20"
                 />
               </div>
             </div>
@@ -300,13 +300,13 @@ export default function ColorPickerModal({ isOpen, color, onSave, onCancel, colo
           <Button
             variant="outline"
             onClick={onCancel}
-            className="border-gray-700 bg-transparent hover:bg-blue-600/20 hover:text-blue-400 transition-colors"
+            className="border-gray-700 bg-transparent hover:bg-white/10 hover:text-white transition-colors"
           >
             Cancel
           </Button>
           <Button
             onClick={() => onSave(currentColor)}
-            className="bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+            className="bg-white/20 hover:bg-white/30 text-white transition-colors"
           >
             Save
           </Button>

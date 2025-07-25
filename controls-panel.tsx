@@ -142,7 +142,7 @@ export default function ControlsPanel({
         <Button
           size="sm"
           onClick={() => setIsHidden(false)}
-          className="bg-black/80 border-gray-700 text-white hover:bg-blue-600/20 hover:text-blue-400 transition-colors"
+          className="bg-black/80 border-gray-700 text-white hover:bg-white/10 hover:text-white transition-colors"
         >
           <ChevronLeft className="w-4 h-4 rotate-180" />
         </Button>
@@ -152,17 +152,17 @@ export default function ControlsPanel({
 
   return (
     <>
-      <div className="absolute top-4 left-4 w-80 z-10">
+      <div className="absolute top-4 left-4 w-72 z-10">
         <Card className="bg-black/80 border-gray-700 text-white">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center justify-between">
+            <CardTitle className="text-base flex items-center justify-between">
               Controls
               <div className="flex gap-2">
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={onReset}
-                  className="border-gray-600 bg-transparent hover:bg-blue-600/20 hover:text-blue-400 transition-colors"
+                  className="border-gray-600 bg-transparent hover:bg-white/10 hover:text-white transition-colors"
                 >
                   <RotateCcw className="w-4 h-4" />
                 </Button>
@@ -170,19 +170,19 @@ export default function ControlsPanel({
                   size="sm"
                   variant="outline"
                   onClick={() => setIsHidden(true)}
-                  className="border-gray-600 bg-transparent hover:bg-blue-600/20 hover:text-blue-400 transition-colors"
+                  className="border-gray-600 bg-transparent hover:bg-white/10 hover:text-white transition-colors"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
               </div>
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-5">
+          <CardContent className="space-y-4">
             {/* Main Controls */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium">Speed</label>
-                <span className="text-sm font-normal text-gray-300">{speed.toFixed(1)}</span>
+                <label className="text-xs font-medium">Speed</label>
+                <span className="text-xs font-normal text-gray-300">{speed.toFixed(1)}</span>
               </div>
               <Slider
                 value={[speed]}
@@ -192,13 +192,13 @@ export default function ControlsPanel({
                 step={0.5}
                 className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
               />
-              <p className="text-xs text-gray-400 mt-1">Animation speed and flow rate</p>
+              <p className="text-[10px] text-gray-400 mt-1">Animation speed and flow rate</p>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium">Base Intensity</label>
-                <span className="text-sm font-normal text-gray-300">{intensity.toFixed(1)}</span>
+                <label className="text-xs font-medium">Base Intensity</label>
+                <span className="text-xs font-normal text-gray-300">{intensity.toFixed(1)}</span>
               </div>
               <Slider
                 value={[intensity]}
@@ -208,13 +208,13 @@ export default function ControlsPanel({
                 step={0.5}
                 className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
               />
-              <p className="text-xs text-gray-400 mt-1">Overall gradient brightness</p>
+              <p className="text-[10px] text-gray-400 mt-1">Overall gradient brightness</p>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium">Press Intensity</label>
-                <span className="text-sm font-normal text-gray-300">
+                <label className="text-xs font-medium">Press Intensity</label>
+                <span className="text-xs font-normal text-gray-300">
                   {(1 + (pressIntensity / 10) * 1.5).toFixed(1)}x
                 </span>
               </div>
@@ -226,13 +226,13 @@ export default function ControlsPanel({
                 step={0.5}
                 className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
               />
-              <p className="text-xs text-gray-400 mt-1">Interaction effect multiplier</p>
+              <p className="text-[10px] text-gray-400 mt-1">Interaction effect multiplier</p>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium">Hover Radius</label>
-                <span className="text-sm font-normal text-gray-300">{hoverRadius.toFixed(1)}</span>
+                <label className="text-xs font-medium">Hover Radius</label>
+                <span className="text-xs font-normal text-gray-300">{hoverRadius.toFixed(1)}</span>
               </div>
               <Slider
                 value={[hoverRadius]}
@@ -242,13 +242,13 @@ export default function ControlsPanel({
                 step={0.1}
                 className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
               />
-              <p className="text-xs text-gray-400 mt-1">Size of mouse interaction area</p>
+              <p className="text-[10px] text-gray-400 mt-1">Size of mouse interaction area</p>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium">Flow Direction</label>
-                <span className="text-sm font-normal text-gray-300">{(flowDirection * 57.3).toFixed(0)}°</span>
+                <label className="text-xs font-medium">Flow Direction</label>
+                <span className="text-xs font-normal text-gray-300">{(flowDirection * 57.3).toFixed(0)}°</span>
               </div>
               <Slider
                 value={[flowDirection]}
@@ -258,13 +258,13 @@ export default function ControlsPanel({
                 step={0.1}
                 className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
               />
-              <p className="text-xs text-gray-400 mt-1">Gradient movement direction</p>
+              <p className="text-[10px] text-gray-400 mt-1">Gradient movement direction</p>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium">Wave Frequency</label>
-                <span className="text-sm font-normal text-gray-300">{waveFrequency.toFixed(1)}</span>
+                <label className="text-xs font-medium">Wave Frequency</label>
+                <span className="text-xs font-normal text-gray-300">{waveFrequency.toFixed(1)}</span>
               </div>
               <Slider
                 value={[waveFrequency]}
@@ -274,19 +274,19 @@ export default function ControlsPanel({
                 step={0.5}
                 className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
               />
-              <p className="text-xs text-gray-400 mt-1">Wave pattern density</p>
+              <p className="text-[10px] text-gray-400 mt-1">Wave pattern density</p>
             </div>
 
             {/* Color Palette Section */}
             <div className="border-t border-gray-600 pt-4">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium">Colors</label>
+                  <label className="text-xs font-medium">Colors</label>
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={onShufflePalette}
-                    className="h-8 w-8 p-0 bg-transparent hover:bg-blue-600/20 hover:text-blue-400 transition-colors"
+                    className="h-8 w-8 p-0 bg-transparent hover:bg-white/10 hover:text-white transition-colors"
                     title="Shuffle color order"
                   >
                     <Shuffle className="w-4 h-4" />
@@ -323,14 +323,14 @@ export default function ControlsPanel({
                       </div>
 
                       {/* Show hex code below each color */}
-                      <div className="text-xs text-gray-400 text-center font-mono">{rgbToHex(color)}</div>
+                      <div className="text-[10px] text-gray-400 text-center font-mono">{rgbToHex(color)}</div>
                     </div>
                   ))}
                 </div>
 
                 {/* Theme Selection */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Theme</label>
+                  <label className="text-xs font-medium">Theme</label>
                   <select
                     value={currentPalette}
                     onChange={(e) => onPaletteChange(e.target.value)}
@@ -349,7 +349,7 @@ export default function ControlsPanel({
                   size="sm"
                   variant="outline"
                   onClick={onRandomPalette}
-                  className="border-gray-600 bg-transparent hover:bg-blue-600/20 hover:text-blue-400 transition-colors w-full"
+                  className="border-gray-600 bg-transparent hover:bg-white/10 hover:text-white transition-colors w-full"
                 >
                   <Dice6 className="w-4 h-4 mr-2" />
                   I'm Feeling Lucky
