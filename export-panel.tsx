@@ -444,235 +444,32 @@ export default DynamicGradient;`
 
   // Generate Framer Override Component that exactly matches current implementation
   const generateFramer = () => {
-    return `import type { ComponentType } from "react"
+    return `import { Override } from "framer"
 import { useState, useEffect, useCallback, useRef } from "react"
 
-// Framer Override for Dynamic Gradient
-export function withDynamicGradient(Component: ComponentType<any>): ComponentType<any> {
-  return (props: any) => {
-    const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
-    const [isClient, setIsClient] = useState(false)
-    const [isPressed, setIsPressed] = useState(false)
-    const animationRef = useRef<number>()
-    const timeRef = useRef(0)
-
-    useEffect(() => {
-      setIsClient(true)
-    }, [])
-
-    const handleMouseMove = useCallback((e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth) * 100
-      const y = (e.clientY / window.innerHeight) * 100
-      setMousePosition({ x, y })
-    }, [])
-
-    const handleMouseDown = useCallback(() => {
-      setIsPressed(true)
-    }, [])
-
-    const handleMouseUp = useCallback(() => {
-      setIsPressed(false)
-    }, [])
-
-    // Smooth animation loop
-    useEffect(() => {
-      const animate = () => {
-        timeRef.current += 0.02
-        animationRef.current = requestAnimationFrame(animate)
-      }
-
-      animate()
-
-      return () => {
-        if (animationRef.current) {
-          cancelAnimationFrame(animationRef.current)
-        }
-      }
-    }, [])
-
-    useEffect(() => {
-      if (isClient) {
-        window.addEventListener("mousemove", handleMouseMove)
-        window.addEventListener("mousedown", handleMouseDown)
-        window.addEventListener("mouseup", handleMouseUp)
-        return () => {
-          window.removeEventListener("mousemove", handleMouseMove)
-          window.removeEventListener("mousedown", handleMouseDown)
-          window.removeEventListener("mouseup", handleMouseUp)
-        }
-      }
-    }, [handleMouseMove, handleMouseDown, handleMouseUp, isClient])
-
-    if (!isClient) {
-      return (
-        <Component 
-          {...props} 
-          style={{ 
-            ...props.style, 
-            background: 'black',
-            width: '100%',
-            height: '100%'
-          }} 
-        />
-      )
-    }
-
-    const time = timeRef.current
-
-    return (
-      <div
-        style={{
-          position: 'relative',
-          overflow: 'hidden',
-          background: 'black',
-          cursor: 'none',
-          width: '100%',
-          height: '100%',
-          ...props.style,
-        }}
-      >
-        {/* Always visible background gradient that follows mouse */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            pointerEvents: 'none',
-            transition: 'all 100ms ease-out',
-            background: \`radial-gradient(circle at \${mousePosition.x}% \${mousePosition.y}%, 
-              rgba(${Math.round(colorPalette[0][0] * 255)}, ${Math.round(colorPalette[0][1] * 255)}, ${Math.round(colorPalette[0][2] * 255)}, \${${0.15} + Math.sin(time * ${2}) * ${0.05}}) 0%,
-              rgba(${Math.round(colorPalette[1][0] * 255)}, ${Math.round(colorPalette[1][1] * 255)}, ${Math.round(colorPalette[1][2] * 255)}, \${${0.12} + Math.sin(time * ${1.5}) * ${0.04}}) 20%, 
-              rgba(${Math.round(colorPalette[2][0] * 255)}, ${Math.round(colorPalette[2][1] * 255)}, ${Math.round(colorPalette[2][2] * 255)}, \${${0.1} + Math.sin(time * ${1.8}) * ${0.03}}) 40%, 
-              rgba(${Math.round(colorPalette[3][0] * 255)}, ${Math.round(colorPalette[3][1] * 255)}, ${Math.round(colorPalette[3][2] * 255)}, \${${0.08} + Math.sin(time * ${2.2}) * ${0.02}}) 60%, 
-              rgba(${Math.round(colorPalette[4][0] * 255)}, ${Math.round(colorPalette[4][1] * 255)}, ${Math.round(colorPalette[4][2] * 255)}, \${${0.06} + Math.sin(time * ${1.3}) * ${0.02}}) 80%, 
-              transparent 100%)\`,
-          }}
-        />
-
-        {/* Enhanced effect when pressed */}
-        {isPressed && (
-          <>
-            {/* Main gradient ooze from cursor */}
-            <div
-              style={{
-                position: 'absolute',
-                pointerEvents: 'none',
-                left: \`\${mousePosition.x}%\`,
-                top: \`\${mousePosition.y}%\`,
-                transform: 'translate(-50%, -50%)',
-                width: 400,
-                height: 400,
-                background: \`radial-gradient(circle at center, 
-                  rgba(${Math.round(colorPalette[0][0] * 255)}, ${Math.round(colorPalette[0][1] * 255)}, ${Math.round(colorPalette[0][2] * 255)}, \${${0.3} + Math.sin(time * ${2}) * ${0.1}}) 0%,
-                  rgba(${Math.round(colorPalette[1][0] * 255)}, ${Math.round(colorPalette[1][1] * 255)}, ${Math.round(colorPalette[1][2] * 255)}, \${${0.25} + Math.sin(time * ${1.5}) * ${0.08}}) 25%, 
-                  rgba(${Math.round(colorPalette[2][0] * 255)}, ${Math.round(colorPalette[2][1] * 255)}, ${Math.round(colorPalette[2][2] * 255)}, \${${0.2} + Math.sin(time * ${1.8}) * ${0.06}}) 45%, 
-                  rgba(${Math.round(colorPalette[3][0] * 255)}, ${Math.round(colorPalette[3][1] * 255)}, ${Math.round(colorPalette[3][2] * 255)}, \${${0.15} + Math.sin(time * ${2.2}) * ${0.05}}) 65%, 
-                  rgba(${Math.round(colorPalette[4][0] * 255)}, ${Math.round(colorPalette[4][1] * 255)}, ${Math.round(colorPalette[4][2] * 255)}, \${${0.1} + Math.sin(time * ${1.3}) * ${0.04}}) 80%, 
-                  transparent 95%)\`,
-                borderRadius: '50%',
-                filter: 'blur(30px)',
-              }}
-            />
-
-            {/* Secondary layer */}
-            <div
-              style={{
-                position: 'absolute',
-                pointerEvents: 'none',
-                left: \`\${mousePosition.x}%\`,
-                top: \`\${mousePosition.y}%\`,
-                transform: 'translate(-50%, -50%)',
-                width: 250,
-                height: 250,
-                background: \`radial-gradient(circle at center, 
-                  rgba(${Math.round(colorPalette[1][0] * 255)}, ${Math.round(colorPalette[1][1] * 255)}, ${Math.round(colorPalette[1][2] * 255)}, \${${0.4} + Math.sin(time * ${2.5}) * ${0.1}}) 0%,
-                  rgba(${Math.round(colorPalette[2][0] * 255)}, ${Math.round(colorPalette[2][1] * 255)}, ${Math.round(colorPalette[2][2] * 255)}, \${${0.3} + Math.sin(time * ${1.7}) * ${0.08}}) 35%, 
-                  rgba(${Math.round(colorPalette[3][0] * 255)}, ${Math.round(colorPalette[3][1] * 255)}, ${Math.round(colorPalette[3][2] * 255)}, \${${0.2} + Math.sin(time * ${2.1}) * ${0.06}}) 60%, 
-                  transparent 85%)\`,
-                borderRadius: '50%',
-                filter: 'blur(20px)',
-              }}
-            />
-
-            {/* Floating particles */}
-            <div
-              style={{
-                position: 'absolute',
-                pointerEvents: 'none',
-                width: 24,
-                height: 24,
-                borderRadius: '50%',
-                background: 'rgba(99, 102, 241, 0.3)',
-                filter: 'blur(2px)',
-                left: \`\${mousePosition.x + Math.sin(time * 3) * 4}%\`,
-                top: \`\${mousePosition.y + Math.cos(time * 3) * 4}%\`,
-                transform: 'translate(-50%, -50%)',
-              }}
-            />
-            <div
-              style={{
-                position: 'absolute',
-                pointerEvents: 'none',
-                width: 20,
-                height: 20,
-                borderRadius: '50%',
-                background: 'rgba(168, 85, 247, 0.25)',
-                filter: 'blur(2px)',
-                left: \`\${mousePosition.x + Math.sin(time * 2.5 + 1) * 5}%\`,
-                top: \`\${mousePosition.y + Math.cos(time * 2.5 + 1) * 5}%\`,
-                transform: 'translate(-50%, -50%)',
-              }}
-            />
-            <div
-              style={{
-                position: 'absolute',
-                pointerEvents: 'none',
-                width: 16,
-                height: 16,
-                borderRadius: '50%',
-                background: 'rgba(236, 72, 153, 0.2)',
-                filter: 'blur(2px)',
-                left: \`\${mousePosition.x + Math.sin(time * 3.5 + 2) * 6}%\`,
-                top: \`\${mousePosition.y + Math.cos(time * 3.5 + 2) * 6}%\`,
-                transform: 'translate(-50%, -50%)',
-              }}
-            />
-          </>
-        )}
-
-        {/* Original component content */}
-        <Component {...props} style={{ position: 'relative', zIndex: 10 }} />
-
-        {/* Custom cursor */}
-        <div
-          style={{
-            position: 'absolute',
-            pointerEvents: 'none',
-            zIndex: 50,
-            left: \`\${mousePosition.x}%\`,
-            top: \`\${mousePosition.y}%\`,
-            transform: 'translate(-50%, -50%)',
-          }}
-        >
-          <div
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              border: \`2px solid \${isPressed ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.6)'}\`,
-              background: isPressed ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.4)',
-              boxShadow: isPressed ? '0 0 20px rgba(168, 85, 247, 0.3)' : 'none',
-              transform: \`scale(\${isPressed ? 1.5 : 1})\`,
-              transition: 'transform 0.1s ease-out, background-color 0.1s ease-out, border-color 0.1s ease-out',
-            }}
-          />
-        </div>
-      </div>
-    )
-  }
+// ===== CUSTOMIZE YOUR SETTINGS HERE =====
+// Copy these values from your control panel and paste them here:
+const GRADIENT_SETTINGS = {
+  speed: ${speed},              // Current: ${speed} (0-10)
+  intensity: ${intensity},          // Current: ${intensity} (0-10) 
+  pressIntensity: ${pressIntensity},     // Current: ${pressIntensity} (0-10)
+  flowDirection: ${flowDirection.toFixed(2)},      // Current: ${(flowDirection * 57.3).toFixed(0)}° (0-6.28 radians)
+  waveFrequency: ${waveFrequency},       // Current: ${waveFrequency} (0-10)
+  colorShift: ${colorShift.toFixed(2)},         // Current: ${colorShift.toFixed(2)} (0-6.28 radians)
+  hoverRadius: ${hoverRadius},        // Current: ${hoverRadius} (0.1-2.0)
+  
+  // Your current color palette (RGB values 0-1):
+  colorPalette: [
+    [${colorPalette[0].map((c) => c.toFixed(3)).join(", ")}], // ${rgbToHex(colorPalette[0])}
+    [${colorPalette[1].map((c) => c.toFixed(3)).join(", ")}], // ${rgbToHex(colorPalette[1])}
+    [${colorPalette[2].map((c) => c.toFixed(3)).join(", ")}], // ${rgbToHex(colorPalette[2])}
+    [${colorPalette[3].map((c) => c.toFixed(3)).join(", ")}], // ${rgbToHex(colorPalette[3])}
+    [${colorPalette[4].map((c) => c.toFixed(3)).join(", ")}]  // ${rgbToHex(colorPalette[4])}
+  ]
 }
+// ==========================================
 
-// Simple override function for Framer (recommended approach)
-export default function DynamicGradientOverride(props: any) {
+export const DynamicGradient: Override = () => {
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
   const [isClient, setIsClient] = useState(false)
   const [isPressed, setIsPressed] = useState(false)
@@ -697,10 +494,10 @@ export default function DynamicGradientOverride(props: any) {
     setIsPressed(false)
   }, [])
 
-  // Smooth animation loop
+  // Animation loop using your speed setting
   useEffect(() => {
     const animate = () => {
-      timeRef.current += 0.02
+      timeRef.current += 0.02 * (GRADIENT_SETTINGS.speed / 2.0)
       animationRef.current = requestAnimationFrame(animate)
     }
 
@@ -728,173 +525,202 @@ export default function DynamicGradientOverride(props: any) {
 
   if (!isClient) {
     return {
-      ...props,
-      style: { 
-        ...props.style, 
+      style: {
         background: 'black',
-        cursor: 'none'
+        cursor: 'none',
+        position: 'relative',
+        overflow: 'hidden'
       }
     }
   }
 
   const time = timeRef.current
+  
+  // Calculate dynamic values using your settings
+  const baseOpacities = [0.15, 0.12, 0.1, 0.08, 0.06].map(val => val * (GRADIENT_SETTINGS.intensity / 4.0))
+  const animationSpeeds = [2, 1.5, 1.8, 2.2, 1.3].map(val => (val * GRADIENT_SETTINGS.speed) / 2.0)
+  const animationAmplitudes = [0.05, 0.04, 0.03, 0.02, 0.02].map(val => val * (GRADIENT_SETTINGS.intensity / 4.0))
+
+  const pressOpacities = [0.3, 0.25, 0.2, 0.15, 0.1].map(val => val * (GRADIENT_SETTINGS.pressIntensity / 5.0))
+  const pressAnimationSpeeds = [2, 1.5, 1.8, 2.2, 1.3].map(val => (val * GRADIENT_SETTINGS.speed) / 2.0)
+  const pressAnimationAmplitudes = [0.1, 0.08, 0.06, 0.05, 0.04].map(val => val * (GRADIENT_SETTINGS.pressIntensity / 5.0))
 
   return {
-    ...props,
     style: {
-      ...props.style,
       position: 'relative',
       overflow: 'hidden',
       background: 'black',
       cursor: 'none',
     },
-    children: (
-      <>
-        {/* Always visible background gradient that follows mouse */}
+    children: [
+      // Background gradient
+      <div
+        key="background"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          transition: 'all 100ms ease-out',
+          background: \`radial-gradient(circle at \${mousePosition.x}% \${mousePosition.y}%, 
+            rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[0][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[0][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[0][2] * 255)}, \${baseOpacities[0] + Math.sin(time * animationSpeeds[0] + GRADIENT_SETTINGS.colorShift) * animationAmplitudes[0]}) 0%,
+            rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[1][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[1][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[1][2] * 255)}, \${baseOpacities[1] + Math.sin(time * animationSpeeds[1] + GRADIENT_SETTINGS.colorShift) * animationAmplitudes[1]}) 20%, 
+            rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[2][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[2][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[2][2] * 255)}, \${baseOpacities[2] + Math.sin(time * animationSpeeds[2] + GRADIENT_SETTINGS.colorShift) * animationAmplitudes[2]}) 40%, 
+            rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[3][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[3][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[3][2] * 255)}, \${baseOpacities[3] + Math.sin(time * animationSpeeds[3] + GRADIENT_SETTINGS.colorShift) * animationAmplitudes[3]}) 60%, 
+            rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[4][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[4][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[4][2] * 255)}, \${baseOpacities[4] + Math.sin(time * animationSpeeds[4] + GRADIENT_SETTINGS.colorShift) * animationAmplitudes[4]}) 80%, 
+            transparent 100%)\`,
+        }}
+      />,
+
+      // Press effects
+      ...(isPressed ? [
+        // Main press gradient
         <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            pointerEvents: 'none',
-            transition: 'all 100ms ease-out',
-            background: \`radial-gradient(circle at \${mousePosition.x}% \${mousePosition.y}%, 
-              rgba(${Math.round(colorPalette[0][0] * 255)}, ${Math.round(colorPalette[0][1] * 255)}, ${Math.round(colorPalette[0][2] * 255)}, \${${0.15} + Math.sin(time * ${2}) * ${0.05}}) 0%,
-              rgba(${Math.round(colorPalette[1][0] * 255)}, ${Math.round(colorPalette[1][1] * 255)}, ${Math.round(colorPalette[1][2] * 255)}, \${${0.12} + Math.sin(time * ${1.5}) * ${0.04}}) 20%, 
-              rgba(${Math.round(colorPalette[2][0] * 255)}, ${Math.round(colorPalette[2][1] * 255)}, ${Math.round(colorPalette[2][2] * 255)}, \${${0.1} + Math.sin(time * ${1.8}) * ${0.03}}) 40%, 
-              rgba(${Math.round(colorPalette[3][0] * 255)}, ${Math.round(colorPalette[3][1] * 255)}, ${Math.round(colorPalette[3][2] * 255)}, \${${0.08} + Math.sin(time * ${2.2}) * ${0.02}}) 60%, 
-              rgba(${Math.round(colorPalette[4][0] * 255)}, ${Math.round(colorPalette[4][1] * 255)}, ${Math.round(colorPalette[4][2] * 255)}, \${${0.06} + Math.sin(time * ${1.3}) * ${0.02}}) 80%, 
-              transparent 100%)\`,
-          }}
-        />
-
-        {/* Enhanced effect when pressed */}
-        {isPressed && (
-          <>
-            {/* Main gradient ooze from cursor */}
-            <div
-              style={{
-                position: 'absolute',
-                pointerEvents: 'none',
-                left: \`\${mousePosition.x}%\`,
-                top: \`\${mousePosition.y}%\`,
-                transform: 'translate(-50%, -50%)',
-                width: 400,
-                height: 400,
-                background: \`radial-gradient(circle at center, 
-                  rgba(${Math.round(colorPalette[0][0] * 255)}, ${Math.round(colorPalette[0][1] * 255)}, ${Math.round(colorPalette[0][2] * 255)}, \${${0.3} + Math.sin(time * ${2}) * ${0.1}}) 0%,
-                  rgba(${Math.round(colorPalette[1][0] * 255)}, ${Math.round(colorPalette[1][1] * 255)}, ${Math.round(colorPalette[1][2] * 255)}, \${${0.25} + Math.sin(time * ${1.5}) * ${0.08}}) 25%, 
-                  rgba(${Math.round(colorPalette[2][0] * 255)}, ${Math.round(colorPalette[2][1] * 255)}, ${Math.round(colorPalette[2][2] * 255)}, \${${0.2} + Math.sin(time * ${1.8}) * ${0.06}}) 45%, 
-                  rgba(${Math.round(colorPalette[3][0] * 255)}, ${Math.round(colorPalette[3][1] * 255)}, ${Math.round(colorPalette[3][2] * 255)}, \${${0.15} + Math.sin(time * ${2.2}) * ${0.05}}) 65%, 
-                  rgba(${Math.round(colorPalette[4][0] * 255)}, ${Math.round(colorPalette[4][1] * 255)}, ${Math.round(colorPalette[4][2] * 255)}, \${${0.1} + Math.sin(time * ${1.3}) * ${0.04}}) 80%, 
-                  transparent 95%)\`,
-                borderRadius: '50%',
-                filter: 'blur(30px)',
-              }}
-            />
-
-            {/* Secondary layer */}
-            <div
-              style={{
-                position: 'absolute',
-                pointerEvents: 'none',
-                left: \`\${mousePosition.x}%\`,
-                top: \`\${mousePosition.y}%\`,
-                transform: 'translate(-50%, -50%)',
-                width: 250,
-                height: 250,
-                background: \`radial-gradient(circle at center, 
-                  rgba(${Math.round(colorPalette[1][0] * 255)}, ${Math.round(colorPalette[1][1] * 255)}, ${Math.round(colorPalette[1][2] * 255)}, \${${0.4} + Math.sin(time * ${2.5}) * ${0.1}}) 0%,
-                  rgba(${Math.round(colorPalette[2][0] * 255)}, ${Math.round(colorPalette[2][1] * 255)}, ${Math.round(colorPalette[2][2] * 255)}, \${${0.3} + Math.sin(time * ${1.7}) * ${0.08}}) 35%, 
-                  rgba(${Math.round(colorPalette[3][0] * 255)}, ${Math.round(colorPalette[3][1] * 255)}, ${Math.round(colorPalette[3][2] * 255)}, \${${0.2} + Math.sin(time * ${2.1}) * ${0.06}}) 60%, 
-                  transparent 85%)\`,
-                borderRadius: '50%',
-                filter: 'blur(20px)',
-              }}
-            />
-
-            {/* Floating particles */}
-            <div
-              style={{
-                position: 'absolute',
-                pointerEvents: 'none',
-                width: 24,
-                height: 24,
-                borderRadius: '50%',
-                background: 'rgba(99, 102, 241, 0.3)',
-                filter: 'blur(2px)',
-                left: \`\${mousePosition.x + Math.sin(time * 3) * 4}%\`,
-                top: \`\${mousePosition.y + Math.cos(time * 3) * 4}%\`,
-                transform: 'translate(-50%, -50%)',
-              }}
-            />
-            <div
-              style={{
-                position: 'absolute',
-                pointerEvents: 'none',
-                width: 20,
-                height: 20,
-                borderRadius: '50%',
-                background: 'rgba(168, 85, 247, 0.25)',
-                filter: 'blur(2px)',
-                left: \`\${mousePosition.x + Math.sin(time * 2.5 + 1) * 5}%\`,
-                top: \`\${mousePosition.y + Math.cos(time * 2.5 + 1) * 5}%\`,
-                transform: 'translate(-50%, -50%)',
-              }}
-            />
-            <div
-              style={{
-                position: 'absolute',
-                pointerEvents: 'none',
-                width: 16,
-                height: 16,
-                borderRadius: '50%',
-                background: 'rgba(236, 72, 153, 0.2)',
-                filter: 'blur(2px)',
-                left: \`\${mousePosition.x + Math.sin(time * 3.5 + 2) * 6}%\`,
-                top: \`\${mousePosition.y + Math.cos(time * 3.5 + 2) * 6}%\`,
-                transform: 'translate(-50%, -50%)',
-              }}
-            />
-          </>
-        )}
-
-        {/* Original content */}
-        {props.children}
-
-        {/* Custom cursor */}
-        <div
+          key="press-main"
           style={{
             position: 'absolute',
             pointerEvents: 'none',
-            zIndex: 50,
             left: \`\${mousePosition.x}%\`,
             top: \`\${mousePosition.y}%\`,
             transform: 'translate(-50%, -50%)',
+            width: Math.round(400 * GRADIENT_SETTINGS.hoverRadius),
+            height: Math.round(400 * GRADIENT_SETTINGS.hoverRadius),
+            background: \`radial-gradient(circle at center, 
+              rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[0][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[0][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[0][2] * 255)}, \${pressOpacities[0] + Math.sin(time * pressAnimationSpeeds[0] + GRADIENT_SETTINGS.colorShift) * pressAnimationAmplitudes[0]}) 0%,
+              rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[1][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[1][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[1][2] * 255)}, \${pressOpacities[1] + Math.sin(time * pressAnimationSpeeds[1] + GRADIENT_SETTINGS.colorShift) * pressAnimationAmplitudes[1]}) 25%, 
+              rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[2][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[2][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[2][2] * 255)}, \${pressOpacities[2] + Math.sin(time * pressAnimationSpeeds[2] + GRADIENT_SETTINGS.colorShift) * pressAnimationAmplitudes[2]}) 45%, 
+              rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[3][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[3][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[3][2] * 255)}, \${pressOpacities[3] + Math.sin(time * pressAnimationSpeeds[3] + GRADIENT_SETTINGS.colorShift) * pressAnimationAmplitudes[3]}) 65%, 
+              rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[4][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[4][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[4][2] * 255)}, \${pressOpacities[4] + Math.sin(time * pressAnimationSpeeds[4] + GRADIENT_SETTINGS.colorShift) * pressAnimationAmplitudes[4]}) 80%, 
+              transparent 95%)\`,
+            borderRadius: '50%',
+            filter: \`blur(\${Math.round(30 * (GRADIENT_SETTINGS.waveFrequency / 3.0))}px)\`,
           }}
-        >
-          <div
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              border: \`2px solid \${isPressed ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.6)'}\`,
-              background: isPressed ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.4)',
-              boxShadow: isPressed ? '0 0 20px rgba(168, 85, 247, 0.3)' : 'none',
-              transform: \`scale(\${isPressed ? 1.5 : 1})\`,
-              transition: 'transform 0.1s ease-out, background-color 0.1s ease-out, border-color 0.1s ease-out',
-            }}
-          />
-        </div>
-      </>
-    )
+        />,
+
+        // Secondary layer
+        <div
+          key="press-secondary"
+          style={{
+            position: 'absolute',
+            pointerEvents: 'none',
+            left: \`\${mousePosition.x + Math.cos(GRADIENT_SETTINGS.flowDirection) * 2}%\`,
+            top: \`\${mousePosition.y + Math.sin(GRADIENT_SETTINGS.flowDirection) * 2}%\`,
+            transform: 'translate(-50%, -50%)',
+            width: Math.round(250 * GRADIENT_SETTINGS.hoverRadius),
+            height: Math.round(250 * GRADIENT_SETTINGS.hoverRadius),
+            background: \`radial-gradient(circle at center, 
+              rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[1][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[1][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[1][2] * 255)}, \${pressOpacities[1] * 1.6 + Math.sin(time * pressAnimationSpeeds[1] * 1.25 + GRADIENT_SETTINGS.colorShift) * pressAnimationAmplitudes[1] * 1.2}) 0%,
+              rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[2][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[2][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[2][2] * 255)}, \${pressOpacities[2] * 1.5 + Math.sin(time * pressAnimationSpeeds[2] * 1.1 + GRADIENT_SETTINGS.colorShift) * pressAnimationAmplitudes[2] * 1.1}) 35%, 
+              rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[3][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[3][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[3][2] * 255)}, \${pressOpacities[3] * 1.3 + Math.sin(time * pressAnimationSpeeds[3] * 1.05 + GRADIENT_SETTINGS.colorShift) * pressAnimationAmplitudes[3] * 1.05}) 60%, 
+              transparent 85%)\`,
+            borderRadius: '50%',
+            filter: \`blur(\${Math.round(20 * (GRADIENT_SETTINGS.waveFrequency / 3.0))}px)\`,
+          }}
+        />,
+
+        // Floating particles
+        <div
+          key="particle-1"
+          style={{
+            position: 'absolute',
+            pointerEvents: 'none',
+            width: Math.round(24 * (GRADIENT_SETTINGS.intensity / 4.0)),
+            height: Math.round(24 * (GRADIENT_SETTINGS.intensity / 4.0)),
+            borderRadius: '50%',
+            background: \`rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[0][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[0][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[0][2] * 255)}, 0.3)\`,
+            filter: 'blur(2px)',
+            left: \`\${mousePosition.x + Math.sin(time * (3 * GRADIENT_SETTINGS.waveFrequency / 3.0) + GRADIENT_SETTINGS.flowDirection) * (4 * GRADIENT_SETTINGS.hoverRadius)}%\`,
+            top: \`\${mousePosition.y + Math.cos(time * (3 * GRADIENT_SETTINGS.waveFrequency / 3.0) + GRADIENT_SETTINGS.flowDirection) * (4 * GRADIENT_SETTINGS.hoverRadius)}%\`,
+            transform: 'translate(-50%, -50%)',
+          }}
+        />,
+        <div
+          key="particle-2"
+          style={{
+            position: 'absolute',
+            pointerEvents: 'none',
+            width: Math.round(20 * (GRADIENT_SETTINGS.intensity / 4.0)),
+            height: Math.round(20 * (GRADIENT_SETTINGS.intensity / 4.0)),
+            borderRadius: '50%',
+            background: \`rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[1][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[1][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[1][2] * 255)}, 0.25)\`,
+            filter: 'blur(2px)',
+            left: \`\${mousePosition.x + Math.sin(time * (2.5 * GRADIENT_SETTINGS.waveFrequency / 3.0) + GRADIENT_SETTINGS.flowDirection + 1) * (5 * GRADIENT_SETTINGS.hoverRadius)}%\`,
+            top: \`\${mousePosition.y + Math.cos(time * (2.5 * GRADIENT_SETTINGS.waveFrequency / 3.0) + GRADIENT_SETTINGS.flowDirection + 1) * (5 * GRADIENT_SETTINGS.hoverRadius)}%\`,
+            transform: 'translate(-50%, -50%)',
+          }}
+        />,
+        <div
+          key="particle-3"
+          style={{
+            position: 'absolute',
+            pointerEvents: 'none',
+            width: Math.round(16 * (GRADIENT_SETTINGS.intensity / 4.0)),
+            height: Math.round(16 * (GRADIENT_SETTINGS.intensity / 4.0)),
+            borderRadius: '50%',
+            background: \`rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[2][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[2][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[2][2] * 255)}, 0.2)\`,
+            filter: 'blur(2px)',
+            left: \`\${mousePosition.x + Math.sin(time * (3.5 * GRADIENT_SETTINGS.waveFrequency / 3.0) + GRADIENT_SETTINGS.flowDirection + 2) * (6 * GRADIENT_SETTINGS.hoverRadius)}%\`,
+            top: \`\${mousePosition.y + Math.cos(time * (3.5 * GRADIENT_SETTINGS.waveFrequency / 3.0) + GRADIENT_SETTINGS.flowDirection + 2) * (6 * GRADIENT_SETTINGS.hoverRadius)}%\`,
+            transform: 'translate(-50%, -50%)',
+          }}
+        />
+      ] : []),
+
+      // Custom cursor
+      <div
+        key="cursor"
+        style={{
+          position: 'absolute',
+          pointerEvents: 'none',
+          zIndex: 50,
+          left: \`\${mousePosition.x}%\`,
+          top: \`\${mousePosition.y}%\`,
+          transform: 'translate(-50%, -50%)',
+        }}
+      >
+        <div
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            border: \`2px solid \${isPressed ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.6)'}\`,
+            background: isPressed ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.4)',
+            boxShadow: isPressed ? \`0 0 20px rgba(\${Math.round(GRADIENT_SETTINGS.colorPalette[1][0] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[1][1] * 255)}, \${Math.round(GRADIENT_SETTINGS.colorPalette[1][2] * 255)}, 0.3)\` : 'none',
+            transform: \`scale(\${isPressed ? 1 + GRADIENT_SETTINGS.pressIntensity / 10 : 1})\`,
+            transition: 'transform 0.1s ease-out, background-color 0.1s ease-out, border-color 0.1s ease-out',
+          }}
+        />
+      </div>
+    ]
   }
 }
 
-// Usage Instructions:
-// 1. Copy this code into a new Code Override in Framer
-// 2. Apply the default export "DynamicGradientOverride" to any Frame
-// 3. The Frame will get the dynamic gradient background
-// 4. Make sure the Frame has width and height set`
+// USAGE INSTRUCTIONS:
+// 1. Copy this entire code into a new Code Override in Framer
+// 2. To match your current settings, modify the GRADIENT_SETTINGS object at the top
+// 3. Apply the "DynamicGradient" override to any Frame in Framer
+// 4. Make sure your Frame has width and height set
+// 5. To update settings later, just edit the GRADIENT_SETTINGS values and the override will update automatically
+
+// QUICK PRESETS (uncomment to use):
+/*
+// Subtle effect:
+const GRADIENT_SETTINGS = {
+  speed: 2, intensity: 3, pressIntensity: 4, flowDirection: 0, 
+  waveFrequency: 2, colorShift: 0, hoverRadius: 0.8, colorPalette: [...]
+}
+
+// Medium effect:
+const GRADIENT_SETTINGS = {
+  speed: 4, intensity: 5, pressIntensity: 6, flowDirection: 1.57, 
+  waveFrequency: 4, colorShift: 1, hoverRadius: 1.2, colorPalette: [...]
+}
+
+// Intense effect:
+const GRADIENT_SETTINGS = {
+  speed: 8, intensity: 8, pressIntensity: 9, flowDirection: 3.14, 
+  waveFrequency: 7, colorShift: 2, hoverRadius: 1.8, colorPalette: [...]
+}
+*/`
   }
 
   // Generate Configuration
