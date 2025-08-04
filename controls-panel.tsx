@@ -254,21 +254,6 @@ export default function ControlsPanel({
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs font-medium">Flow Direction</label>
-                    <span className="text-xs font-normal text-gray-300">{(flowDirection * 57.3).toFixed(0)}°</span>
-                  </div>
-                  <Slider
-                    value={[flowDirection]}
-                    onValueChange={(value) => setFlowDirection(value[0])}
-                    min={0}
-                    max={6.28}
-                    step={0.1}
-                    className="w-full [&_[role=slider]]:bg-white [&_[data-orientation=horizontal]]:bg-gray-600 [&_[data-orientation=horizontal]_span]:bg-white"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-2">
                     <label className="text-xs font-medium">Wave Density</label>
                     <span className="text-xs font-normal text-gray-300">{waveFrequency.toFixed(1)}</span>
                   </div>
@@ -328,22 +313,6 @@ export default function ControlsPanel({
                           <div className="text-[10px] text-gray-400 text-center font-mono">{rgbToHex(color)}</div>
                         </div>
                       ))}
-                    </div>
-
-                    {/* Theme Selection */}
-                    <div className="space-y-2">
-                      <label className="text-xs font-medium">Theme</label>
-                      <select
-                        value={currentPalette}
-                        onChange={(e) => onPaletteChange(e.target.value)}
-                        className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-                      >
-                        {Object.keys(palettes).map((name) => (
-                          <option key={name} value={name}>
-                            {name}
-                          </option>
-                        ))}
-                      </select>
                     </div>
 
                     {/* I'm Feeling Lucky Button */}
